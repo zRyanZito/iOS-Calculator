@@ -1,0 +1,87 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: Poppins, sans-serif;
+    background: linear-gradient(0deg, rgba(15,12,41,1) 0%, rgba(48,43,99,1) 50%, rgba(36,36,62,1) 100%);
+}
+
+.container {
+    display: flex;
+    width: 26rem;
+    height: 42.7rem;
+    background-color: black;
+    border: solid 5px purple;
+    border-radius: 2.5rem;
+    overflow: hidden;
+}
+
+.inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    width: 100vw;
+    margin: 0;
+    padding: 1rem;
+    list-style: none;
+    font-size: 20px;
+}
+
+.inputs li { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: .3rem;
+}
+
+.inputs button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%; 
+    border: none;
+    border-radius: 10rem;
+    background-color: #333;
+    color: white;
+}
+
+.inputs button:hover {
+    cursor: pointer;
+    box-shadow: inset 10px 0px 15px 12px rgba(92, 90, 100, 0.2);
+}
+
+.inputs li.display {
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    grid-column: span 4;
+}
+
+.inputs li.division button, li.multiply button, li.division button, li.addition button, li.subtraction button, li.equality button {
+    background-color: purple;
+}
+
+.inputs li.division button:hover, li.multiply button:hover, li.division button:hover, li.addition button:hover, li.subtraction button:hover, li.equality button:hover {
+    box-shadow: inset 10px 0px 15px 12px rgba(67, 1, 83, 0.356)
+}
+
+.inputs li.clean button, li.signal button, li.porcent button{
+    color: black;
+    background-color: #888;
+}
+
+.inputs li.clean button:hover, li.signal button:hover, li.porcent button:hover {
+    box-shadow: inset 10px 0px 15px 12px rgba(70, 64, 70, 0.356)
+}
+
+.inputs li.zero{
+    grid-column: span 2;
+}
+
+/* Created by: RyanZito  */
