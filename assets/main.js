@@ -93,12 +93,10 @@ function comma(){
 function multiply(){
 
     if (mydisplay !=0 && mydisplay !=NaN || isDivi || isAdd || isSub ){
-
-    mult.style.backgroundColor = '#c900ff'
-    div.style.backgroundColor = 'Purple'
-    add.style.backgroundColor = 'Purple'
-    sub.style.backgroundColor = 'Purple'
-
+        mult.style.backgroundColor = '#c900ff'
+        div.style.backgroundColor = 'Purple'
+        add.style.backgroundColor = 'Purple'
+        sub.style.backgroundColor = 'Purple'
     }
 
     if (isPorcent) {
@@ -106,10 +104,10 @@ function multiply(){
     }
     else if(isDivi){
         equality()
+        isMult = false
         isSub = false
         isDivi = false
-        isAdd = false
-        isMult = true
+        isAdd = true
         diviPressed = true
         multiply()
         return firstNumber = mydisplay, mydisplay = 0
@@ -220,15 +218,11 @@ function addition(){
 
 function division(){
 
-    console.log(display)
-
     if (mydisplay !=0 && mydisplay !=NaN || isAdd || isMult || isSub){
-
-    div.style.backgroundColor = '#c900ff'
-    add.style.backgroundColor = 'Purple'
-    mult.style.backgroundColor = 'Purple'
-    sub.style.backgroundColor = 'Purple'
-
+        div.style.backgroundColor = '#c900ff'
+        add.style.backgroundColor = 'Purple'
+        mult.style.backgroundColor = 'Purple'
+        sub.style.backgroundColor = 'Purple'
     }
 
     if(isAdd){
@@ -267,7 +261,7 @@ function division(){
         addPressed = false
         multPressed = false
     }
-    else if (mydisplay !=0 && mydisplay !=NaN && !subPressed && !addPressed && !multPressed){
+    else if (mydisplay !=0 && mydisplay !=NaN && !subPressed && !multPressed && !multPressed){
         insertComma = false
         verify = false
         limit = []
@@ -352,6 +346,21 @@ function equality(){
         mydisplay = Number(mydisplay)
 
         display.innerHTML = `${mydisplay.toLocaleString('pt-BR')}`
+
+        firstNumber = Number(mydisplay)
+
+        isAdd = false
+        isSub = false
+        isMult = false
+        isDivi = false
+        isPorcent = false
+        limit = []
+        insertComma = false
+        verify = false
+        subPressed = false
+        addPressed = false
+        multPressed = false
+        diviPressed = false
     }
     else if (isDivi) {
         mydisplay = firstNumber / mydisplay
@@ -359,6 +368,21 @@ function equality(){
         mydisplay = Number(mydisplay)
 
         display.innerHTML = `${mydisplay.toLocaleString('pt-BR')}`
+
+        firstNumber = Number(mydisplay)
+
+        isAdd = false
+        isSub = false
+        isMult = false
+        isDivi = false
+        isPorcent = false
+        limit = []
+        insertComma = false
+        verify = false
+        subPressed = false
+        addPressed = false
+        multPressed = false
+        diviPressed = false
     }
     else if (isAdd) {
         mydisplay = firstNumber + mydisplay
@@ -366,6 +390,21 @@ function equality(){
         mydisplay = Number(mydisplay)
 
         display.innerHTML = `${mydisplay.toLocaleString('pt-BR')}`
+
+        firstNumber = Number(mydisplay)
+
+        isAdd = false
+        isSub = false
+        isMult = false
+        isDivi = false
+        isPorcent = false
+        limit = []
+        insertComma = false
+        verify = false
+        subPressed = false
+        addPressed = false
+        multPressed = false
+        diviPressed = false
     }
     else if (isSub) {
         mydisplay = firstNumber - mydisplay
@@ -373,6 +412,21 @@ function equality(){
         mydisplay = Number(mydisplay)
 
         display.innerHTML = `${mydisplay.toLocaleString('pt-BR')}`
+
+        firstNumber = Number(mydisplay)
+
+        isAdd = false
+        isSub = false
+        isMult = false
+        isDivi = false
+        isPorcent = false
+        limit = []
+        insertComma = false
+        verify = false
+        subPressed = false
+        addPressed = false
+        multPressed = false
+        diviPressed = false
     }
     
 }
