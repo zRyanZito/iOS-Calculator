@@ -1,9 +1,13 @@
+// Created by: RyanZito
+
+// VARIAVEIS DO DOCUMENTO HTML //
 var display = document.querySelector('h1.numero')
 var mult = document.querySelector('button.mult')
 var div = document.querySelector('button.div')
 var add = document.querySelector('button.add')
 var sub = document.querySelector('button.sub')
 
+// VARIAVEIS DA LÓGICA DA CALCULADORA //
 var insertComma = false 
 var mydisplay = 0
 var isAdd = false
@@ -19,8 +23,10 @@ var addPressed = false
 var multPressed = false
 var diviPressed = false
 
+// DEFININDO O VALOR INICIAL DA TELA //
 display.innerHTML = `0`
 
+// FUNÇÕES DE CADA BOTÃO //
 function clean(){
     
     mult.style.backgroundColor = 'Purple'
@@ -485,5 +491,3 @@ function equal(){
     }
     
 }
-
-// Created by: RyanZito
