@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const CalculatorContainer = styled.div`
@@ -20,20 +20,12 @@ const CalculatorContent = styled.div`
     width: 25%;
 `
 
-const InputsContainer = styled.div`
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    height: 80%;
-    font-size: 1.25rem;
-    color: white;
-`
-
 const Display = styled.div`
     display: flex;
     justify-content: end;
     align-items: center;
     width: 100%;
-    height: 20%;
+    height: 25%;
     box-sizing: border-box;
     color: white;
     grid-column: span 4;
@@ -48,6 +40,14 @@ const DisplayNumber = styled.h1`
     width: 100%;
     height: 80%;
     font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+`
+
+const InputsContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    height: 75%;
+    color: white;
 `
 
 const ButtonContainer = styled.div`
@@ -73,10 +73,16 @@ const Button = styled.button`
     background-color: #333;
     font-family: 'Poppins', sans-serif;
     font-weight: bold;
+    font-size: 1rem;
+    transition: all .3s ease-in-out;
     color: white;
 
     &.button-zero{
         border-radius: 5rem;
+    }
+
+    &.active{
+        background-color: purple;
     }
 
     &:hover{
@@ -86,161 +92,190 @@ const Button = styled.button`
 `
 
 function App() {
-    const [display, setDisplay] = useState("0");
-    const [backupValue, setBackupValue] = useState("0");
+    const [display, setDisplay] = useState('0');
+    const [backupValue, setBackupValue] = useState('0');
     const [operation, setOperation] = useState(false);
-    const [validity, setValidity] = useState(true);
+    const [result, setResult] = useState('0');
+    const [insertComma, setInsertComma] = useState(false);
     const [isOperation, setIsOperation] = useState('');
 
-    const handleClick = (value: string) => {
-        if(!isOperation && parseFloat(display) < 1){
-            setDisplay(value);
+    const [keymap] = useState({
+        '0': () => handleClick('0'),
+        '1': () => handleClick('1'),
+        '2': () => handleClick('2'),
+        '3': () => handleClick('3'),
+        '4': () => handleClick('4'),
+        '5': () => handleClick('5'),
+        '6': () => handleClick('6'),
+        '7': () => handleClick('7'),
+        '8': () => handleClick('8'),
+        '9': () => handleClick('9'),
+        '+': () => handleOperation('addition'),
+        '-': () => handleOperation('subtraction'),
+        '*': () => handleOperation('multiply'),
+        '/': () => handleOperation('division'),
+        '=': () => Equality(true),
+        'Enter': () => Equality(true),
+        'Escape': () => Clean(),
+        '.': () => handleClick('.'),
+    });
+
+    useEffect(() => {
+        document.addEventListener('keypress', function (e) {
+            if (keymap[e.key]) {
+                keymap[e.key]();
+            }
+        });
+    }, [keymap]);
+
+    useEffect(() => {
+        if (isOperation && parseFloat(backupValue) > 0) {
+            setResult(backupValue);
+        } else {
+            setResult(parseFloat(display).toFixed(2));
         }
-        else if(!isOperation){
+    }, [display, backupValue, isOperation]);
+
+    const handleClick = (value: string) => {
+        if (value === '.') {
+            if (insertComma) return;
+            setInsertComma(true);
+            setDisplay(display + value);
+            return;
+        }
+
+        if (!isOperation && display.length > 13) {
+            alert("Número muito grande!");
+            return;
+        }
+
+        if (isOperation && backupValue.length > 13) {
+            alert("Número muito grande!");
+            return;
+        }
+
+        if (!isOperation && parseFloat(display) < 1) {
+            setDisplay(value);
+            return;
+        } else if (!isOperation) {
             setDisplay(display + value);
         }
 
-        if(isOperation && parseFloat(backupValue) === parseFloat(display)){
+        if (isOperation && parseFloat(backupValue) === 0) {
             setBackupValue(value);
             return;
-        }
-        else if (isOperation){
+        } else if (isOperation) {
             setBackupValue(backupValue + value);
         }
-        else{
-            return;
-        }
-    }
+    };
 
-    const handleOperation = (operation: string) => {
-        if(isOperation && validity){
-            Equality();
-            setValidity(false);
-            return;
+    const handleOperation = (op: string) => {
+        if (isOperation && parseFloat(backupValue) > 0) {
+            Equality(false);
+            setOperation(op);
+            setBackupValue('0');
         }
 
-        setBackupValue(display);
-        setIsOperation(true);
+        if (parseFloat(display) === 0) {
+            alert("Digite um número!");
+            return;
+        }
 
-        switch(operation){
-            case "addition": 
-                setOperation('addition');
+        if (!isOperation) {
+            setIsOperation(true);
+            setOperation(op);
+        }
+    };
+
+    const Equality = (IsClick: boolean) => {
+        if (parseFloat(display) < 1) {
+            alert("Digite um número!");
+            return;
+        }
+
+        if (!isOperation) return;
+
+        if (IsClick) {
+            setIsOperation(false);
+            setOperation('');
+            setBackupValue('0');
+        }
+
+        switch (operation) {
+            case "addition":
+                setDisplay(String(parseFloat(backupValue) + parseFloat(display)));
+                break;
+            case "subtraction":
+                setDisplay(String(parseFloat(display) - parseFloat(backupValue)));
+                break;
+            case "multiply":
+                setDisplay(String(parseFloat(backupValue) * parseFloat(display)));
+                break;
+            case "division":
+                setDisplay(String(parseFloat(display) / parseFloat(backupValue)));
                 break;
             default:
                 break;
         }
-    }
+    };
 
-    const Equality = () => {
-        if(!isOperation){
-            return;
-        }
-        else{
-            switch(operation){
-                case "addition":
-                    setDisplay(String(parseFloat(backupValue) + parseFloat(display)));
+    const Clean = () => {
+        setDisplay('0');
+        setBackupValue('0');
+        setIsOperation(false);
+        setOperation('');
+        setResult('0');
+        setInsertComma(false);
+    };
 
-                    break;
-                default:
-                    break;
-            }
-
-            setIsOperation(false);
-            setValidity(true);
-            setBackupValue("0");
-        }
-    }
-
+    const buttons = [
+        { label: "AC", action: Clean, className: "button-clean" },
+        { label: "+/-", action: () => {}, className: "signal" },
+        { label: "%", action: () => {}, className: "porcent" },
+        { label: "/", action: () => handleOperation("division"), className: "operation", operation: "division" },
+        { label: "7", action: () => handleClick("7"), className: "button-seven" },
+        { label: "8", action: () => handleClick("8"), className: "button-eight" },
+        { label: "9", action: () => handleClick("9"), className: "button-nine" },
+        { label: "x", action: () => handleOperation("multiply"), className: "operation", operation: "multiply" },
+        { label: "4", action: () => handleClick("4"), className: "button-four" },
+        { label: "5", action: () => handleClick("5"), className: "button-five" },
+        { label: "6", action: () => handleClick("6"), className: "button-six" },
+        { label: "-", action: () => handleOperation("subtraction"), className: "operation", operation: "subtraction" },
+        { label: "1", action: () => handleClick("1"), className: "button-one" },
+        { label: "2", action: () => handleClick("2"), className: "button-two" },
+        { label: "3", action: () => handleClick("3"), className: "button-three" },
+        { label: "+", action: () => handleOperation("addition"), className: "operation", operation: "addition" },
+        { label: "0", action: () => handleClick("0"), className: "button-zero", isZero: true },
+        { label: ".", action: () => handleClick("."), className: "button-comma" },
+        { label: "=", action: () => Equality(true), className: "button-equality" }
+    ];    
+    
     return (
         <CalculatorContainer>
             <CalculatorContent>
                 <Display>
-                    <DisplayNumber className="numero">
-                        {
-                            isOperation ? parseFloat(backupValue).toLocaleString('pt-BR') : display.length > 1 ? parseFloat(display).toLocaleString('pt-BR') : display
-                        }
+                    <DisplayNumber>
+                        {result !== '' ? parseFloat(result).toLocaleString('pt-BR', { maximumFractionDigits: 10 }) : result}
                     </DisplayNumber>
                 </Display>
-                
+
                 <InputsContainer>
-                    <ButtonContainer>
-                        <Button className="button-clean">AC</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="signal">
-                        <Button className="signal">+/-</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="porcent">
-                        <Button className="porcent">%</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="division">
-                        <Button className="div">/</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="seven" onClick={() => handleClick("7")}>
-                        <Button className="button-seven">7</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="eight" onClick={() => handleClick("8")}>
-                        <Button className="button-eight">8</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="nine" onClick={() => handleClick("9")}>
-                        <Button className="button-nine">9</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="multiply">
-                        <Button className="mult">x</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="four" onClick={() => handleClick("4")}>
-                        <Button className="button-four">4</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="five" onClick={() => handleClick("5")}>
-                        <Button className="button-five">5</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="six" onClick={() => handleClick("6")}>
-                        <Button className="button-six">6</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="subtraction">
-                        <Button className="sub">-</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="one" onClick={() => handleClick("1")}>
-                        <Button className="button-one">1</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="two" onClick={() => handleClick("2")}>
-                        <Button className="button-two">2</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="three" onClick={() => handleClick("3")}>
-                        <Button className="button-three">3</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="addition">
-                        <Button className="add" onClick={() => handleOperation("addition")}>+</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="zero" onClick={() => handleClick("0")}>
-                        <Button className="button-zero">0</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="comma">
-                        <Button className="button-comma">,</Button>
-                    </ButtonContainer>
-
-                    <ButtonContainer className="equality" onClick={Equality}>
-                        <Button className="button-equality">=</Button>
-                    </ButtonContainer>
+                    {buttons.map((button, index) => (
+                        <ButtonContainer
+                            key={index}
+                            className={button.isZero ? "zero" : ""}
+                            onClick={button.action}
+                        >
+                            <Button
+                                className={`${button.className} ${button.operation === operation ? "active" : ""}`}
+                            >
+                                {button.label}
+                            </Button>
+                        </ButtonContainer>
+                    ))}
                 </InputsContainer>
             </CalculatorContent>
-        </CalculatorContainer>  
+        </CalculatorContainer>
     );
 }
 
